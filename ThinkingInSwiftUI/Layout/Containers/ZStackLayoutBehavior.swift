@@ -23,56 +23,56 @@ struct ZStackLayoutBehavior: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 30) {
-
+                
                 // MARK: - ZStack vs Overlay/Background
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("🆚 ZSTACK VS OVERLAY/BACKGROUND")
                             .font(.headline)
-
+                        
                         Text("The fundamental difference:")
                             .font(.subheadline)
-
+                        
                         ComparisonRow(
                             title: "overlay/background",
                             behavior: "Size = Primary's size (secondary ignored)",
                             color: .blue
                         )
-
+                        
                         ComparisonRow(
                             title: "ZStack",
                             behavior: "Size = UNION of all subviews' sizes",
                             color: .green
                         )
-
+                        
                         Text("This difference has HUGE layout implications!")
                             .font(.caption)
                             .foregroundColor(.orange)
                     }
-                }
-
+                })
+                
                 // MARK: - The Badge Example
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("📛 THE BADGE EXAMPLE")
                             .font(.headline)
-
+                        
                         Text("Same visual appearance, DIFFERENT layout behavior:")
                             .font(.subheadline)
-
+                        
                         Text("These are bottom-aligned in an HStack. Watch where the 'bottom' is!")
                             .font(.caption)
                             .foregroundColor(.secondary)
-
+                        
                         HStack(alignment: .bottom, spacing: 30) {
                             // Left: Using overlay (correct!)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("With overlay")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-
+                                
                                 Text("Hello, world")
                                     .font(.title2)
                                     .overlay(alignment: .topTrailing) {
@@ -86,22 +86,22 @@ struct ZStackLayoutBehavior: View {
                                             .offset(x: 5, y: -5)
                                     }
                                     .border(Color.blue)
-
+                                
                                 Text("↑ Bottom = bottom of 'Hello, world'")
                                     .font(.caption2)
                                     .foregroundColor(.blue)
                             }
-
+                            
                             // Right: Using ZStack (problematic!)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("With ZStack")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-
+                                
                                 ZStack(alignment: .topTrailing) {
                                     Text("Hello, world")
                                         .font(.title2)
-
+                                    
                                     Text("A")
                                         .font(.caption)
                                         .padding(3)
@@ -112,7 +112,7 @@ struct ZStackLayoutBehavior: View {
                                         .offset(x: 5, y: -5)
                                 }
                                 .border(Color.green)
-
+                                
                                 Text("↑ Bottom = bottom of 'A' badge!")
                                     .font(.caption2)
                                     .foregroundColor(.red)
@@ -120,11 +120,11 @@ struct ZStackLayoutBehavior: View {
                         }
                         .padding()
                         .background(Color.gray.opacity(0.1))
-
+                        
                         Text("Notice the difference:")
                             .font(.subheadline)
                             .padding(.top, 5)
-
+                        
                         VStack(alignment: .leading, spacing: 5) {
                             BadgeComparisonPoint(
                                 emoji: "✅",
@@ -132,7 +132,7 @@ struct ZStackLayoutBehavior: View {
                                 detail: "Size = 'Hello, world' size. Badge doesn't affect layout.",
                                 color: .blue
                             )
-
+                            
                             BadgeComparisonPoint(
                                 emoji: "⚠️",
                                 title: "ZStack",
@@ -141,24 +141,24 @@ struct ZStackLayoutBehavior: View {
                             )
                         }
                         .font(.caption)
-
+                        
                         Text("🎯 Result: With ZStack, the badge shifts the baseline down!")
                             .font(.caption)
                             .foregroundColor(.orange)
                             .padding(.top, 5)
                     }
-                }
-
+                })
+                
                 // MARK: - Color Stretching Example
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("🎨 COLOR STRETCHING")
                             .font(.headline)
-
+                        
                         Text("Why does Color stretch to fill the entire ZStack?")
                             .font(.subheadline)
-
+                        
                         VStack(alignment: .leading, spacing: 10) {
                             Text("""
                             ZStack {
@@ -170,47 +170,47 @@ struct ZStackLayoutBehavior: View {
                             .padding(8)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(5)
-
+                            
                             Text("When used as root view:")
                                 .font(.caption)
                                 .bold()
-
+                            
                             ZStackAlgorithmStep(
                                 step: "1",
                                 description: "ZStack gets proposed entire safe area (e.g., 390×844)",
                                 result: "ZStack receives proposal"
                             )
-
+                            
                             ZStackAlgorithmStep(
                                 step: "2",
                                 description: "ZStack proposes SAME size to Color.teal",
                                 result: "Color proposes: 390×844"
                             )
-
+                            
                             ZStackAlgorithmStep(
                                 step: "3",
                                 description: "Color.teal accepts full proposal",
                                 result: "Color reports: 390×844"
                             )
-
+                            
                             ZStackAlgorithmStep(
                                 step: "4",
                                 description: "ZStack proposes SAME size to Text",
                                 result: "Text proposes: 390×844"
                             )
-
+                            
                             ZStackAlgorithmStep(
                                 step: "5",
                                 description: "Text becomes ideal size",
                                 result: "Text reports: ~100×20"
                             )
-
+                            
                             ZStackAlgorithmStep(
                                 step: "6",
                                 description: "ZStack computes UNION of frames",
                                 result: "Union(390×844, 100×20) = 390×844"
                             )
-
+                            
                             ZStackAlgorithmStep(
                                 step: "✓",
                                 description: "ZStack reports final size",
@@ -218,12 +218,12 @@ struct ZStackLayoutBehavior: View {
                             )
                         }
                         .font(.caption)
-
+                        
                         // Visual example
                         VStack(alignment: .leading, spacing: 5) {
                             Text("Live example:")
                                 .font(.caption)
-
+                            
                             ZStack {
                                 Color.teal
                                 Text("Hello, world")
@@ -231,24 +231,24 @@ struct ZStackLayoutBehavior: View {
                             }
                             .frame(width: 200, height: 100)
                             .border(Color.gray)
-
+                            
                             Text("Color stretches to 200×100 because ZStack proposed it!")
                                 .font(.caption)
                                 .foregroundColor(.green)
                         }
                     }
-                }
-
+                })
+                
                 // MARK: - The Union Algorithm
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("📐 THE UNION ALGORITHM")
                             .font(.headline)
-
+                        
                         Text("ZStack computes the bounding box of ALL subviews:")
                             .font(.subheadline)
-
+                        
                         VStack(alignment: .leading, spacing: 10) {
                             UnionExample(
                                 subviews: [
@@ -258,60 +258,60 @@ struct ZStackLayoutBehavior: View {
                                 union: "100×80",
                                 explanation: "Width = max(100, 80) = 100\nHeight = max(50, 80) = 80"
                             )
-
+                            
                             Text("Visual representation:")
                                 .font(.caption)
                                 .padding(.top, 5)
-
+                            
                             // Show the union visually
                             VStack(alignment: .leading, spacing: 5) {
                                 ZStack {
                                     Rectangle()
                                         .fill(Color.red.opacity(0.3))
                                         .frame(width: 100, height: 50)
-
+                                    
                                     Rectangle()
                                         .fill(Color.blue.opacity(0.3))
                                         .frame(width: 80, height: 80)
                                 }
                                 .border(Color.green, width: 2)
-
+                                
                                 Text("Green border = ZStack's size (100×80)")
                                     .font(.caption)
                                     .foregroundColor(.green)
                             }
                         }
-
+                        
                         Text("🎯 Key insight: Even a tiny badge can make the ZStack taller!")
                             .font(.caption)
                             .foregroundColor(.orange)
                             .padding(.top, 5)
                     }
-                }
-
+                })
+                
                 // MARK: - ZStack Proposal Behavior
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("📨 ZSTACK PROPOSAL BEHAVIOR")
                             .font(.headline)
-
+                        
                         Text("Unlike HStack/VStack, ZStack proposes the SAME size to ALL subviews:")
                             .font(.subheadline)
-
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             ProposalComparisonRow(
                                 container: "HStack",
                                 behavior: "Divides width: 200÷3 = ~67pt to each",
                                 fair: false
                             )
-
+                            
                             ProposalComparisonRow(
                                 container: "VStack",
                                 behavior: "Divides height: 200÷3 = ~67pt to each",
                                 fair: false
                             )
-
+                            
                             ProposalComparisonRow(
                                 container: "ZStack",
                                 behavior: "Proposes FULL 200×200 to each!",
@@ -319,58 +319,58 @@ struct ZStackLayoutBehavior: View {
                             )
                         }
                         .font(.caption)
-
+                        
                         Text("This is why Color fills the entire ZStack — it gets the full proposal!")
                             .font(.caption)
                             .foregroundColor(.blue)
                             .padding(.top, 5)
                     }
-                }
-
+                })
+                
                 // MARK: - Alignment Parameter
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("🎯 ALIGNMENT PARAMETER")
                             .font(.headline)
-
+                        
                         Text("ZStack accepts an alignment parameter (default: .center):")
                             .font(.subheadline)
-
+                        
                         VStack(spacing: 15) {
                             // Center (default)
                             AlignmentExample(
                                 alignment: .center,
                                 alignmentName: ".center (default)"
                             )
-
+                            
                             // Top leading
                             AlignmentExample(
                                 alignment: .topLeading,
                                 alignmentName: ".topLeading"
                             )
-
+                            
                             // Bottom trailing
                             AlignmentExample(
                                 alignment: .bottomTrailing,
                                 alignmentName: ".bottomTrailing"
                             )
                         }
-
+                        
                         Text("⚠️ Important: Alignment doesn't change the ZStack's size, only positioning!")
                             .font(.caption)
                             .foregroundColor(.orange)
                             .padding(.top, 5)
                     }
-                }
-
+                })
+                
                 // MARK: - Comparison Table
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("📊 COMPARISON TABLE")
                             .font(.headline)
-
+                        
                         VStack(spacing: 0) {
                             // Header
                             HStack(spacing: 0) {
@@ -379,9 +379,9 @@ struct ZStackLayoutBehavior: View {
                                 TableHeaderCell(text: "background")
                                 TableHeaderCell(text: "ZStack")
                             }
-
+                            
                             Divider()
-
+                            
                             // Row: Sizing
                             HStack(spacing: 0) {
                                 TableCell(text: "Sizing", isRowHeader: true)
@@ -389,9 +389,9 @@ struct ZStackLayoutBehavior: View {
                                 TableCell(text: "Primary's size", color: .blue)
                                 TableCell(text: "Union of all", color: .green)
                             }
-
+                            
                             Divider()
-
+                            
                             // Row: Proposal to subviews
                             HStack(spacing: 0) {
                                 TableCell(text: "Proposal", isRowHeader: true)
@@ -399,9 +399,9 @@ struct ZStackLayoutBehavior: View {
                                 TableCell(text: "Primary → same\nSecondary → primary's size", color: .blue)
                                 TableCell(text: "All → same size", color: .green)
                             }
-
+                            
                             Divider()
-
+                            
                             // Row: Affects layout
                             HStack(spacing: 0) {
                                 TableCell(text: "Secondary affects layout?", isRowHeader: true)
@@ -409,9 +409,9 @@ struct ZStackLayoutBehavior: View {
                                 TableCell(text: "❌ No", color: .blue)
                                 TableCell(text: "✅ Yes", color: .green)
                             }
-
+                            
                             Divider()
-
+                            
                             // Row: Use case
                             HStack(spacing: 0) {
                                 TableCell(text: "Best for", isRowHeader: true)
@@ -423,15 +423,15 @@ struct ZStackLayoutBehavior: View {
                         .font(.caption)
                         .border(Color.gray)
                     }
-                }
-
+                })
+                
                 // MARK: - Practical Examples
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("💼 PRACTICAL EXAMPLES")
                             .font(.headline)
-
+                        
                         VStack(alignment: .leading, spacing: 15) {
                             // Example 1: Profile picture with status indicator
                             PracticalExample(
@@ -444,7 +444,7 @@ struct ZStackLayoutBehavior: View {
                                     .overlay(alignment: .bottomTrailing) {
                                         Circle().fill(.green).frame(width: 12)
                                     }
-
+                                
                                 // ❌ Bad: ZStack
                                 ZStack(alignment: .bottomTrailing) {
                                     Image("profile")
@@ -452,7 +452,7 @@ struct ZStackLayoutBehavior: View {
                                 }
                                 """
                             )
-
+                            
                             // Example 2: Notification badge
                             PracticalExample(
                                 title: "Notification badge on button",
@@ -464,7 +464,7 @@ struct ZStackLayoutBehavior: View {
                                     .overlay(alignment: .topTrailing) {
                                         Text("5").badge()
                                     }
-
+                                
                                 // ❌ Bad: ZStack
                                 ZStack(alignment: .topTrailing) {
                                     Button("Messages") { }
@@ -472,7 +472,7 @@ struct ZStackLayoutBehavior: View {
                                 }
                                 """
                             )
-
+                            
                             // Example 3: Layered card design
                             PracticalExample(
                                 title: "Layered card design",
@@ -485,7 +485,7 @@ struct ZStackLayoutBehavior: View {
                                     VStack { /* content */ }
                                     Image("watermark").opacity(0.1)
                                 }
-
+                                
                                 // ❌ Bad: overlay (if watermark > content)
                                 VStack { /* content */ }
                                     .overlay {
@@ -495,15 +495,15 @@ struct ZStackLayoutBehavior: View {
                             )
                         }
                     }
-                }
-
+                })
+                
                 // MARK: - Common Pitfalls
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("⚠️ COMMON PITFALLS")
                             .font(.headline)
-
+                        
                         VStack(alignment: .leading, spacing: 10) {
                             ZStackPitfallItem(
                                 emoji: "1️⃣",
@@ -511,28 +511,28 @@ struct ZStackLayoutBehavior: View {
                                 description: "Badges should NOT affect layout. Use overlay instead!",
                                 fix: "Use overlay with .fixedSize() for the badge"
                             )
-
+                            
                             ZStackPitfallItem(
                                 emoji: "2️⃣",
                                 title: "Expecting ZStack to behave like overlay",
                                 description: "They look similar but behave VERY differently.",
                                 fix: "Remember: ZStack size = UNION of all subviews"
                             )
-
+                            
                             ZStackPitfallItem(
                                 emoji: "3️⃣",
                                 title: "Not constraining flexible views",
                                 description: "Color in ZStack will expand to full proposal.",
                                 fix: "Use .frame() to constrain if needed"
                             )
-
+                            
                             ZStackPitfallItem(
                                 emoji: "4️⃣",
                                 title: "Forgetting about z-index",
                                 description: "Later views in ZStack appear on top.",
                                 fix: "Order matters! Or use .zIndex() modifier"
                             )
-
+                            
                             ZStackPitfallItem(
                                 emoji: "5️⃣",
                                 title: "Alignment confusion",
@@ -541,37 +541,37 @@ struct ZStackLayoutBehavior: View {
                             )
                         }
                     }
-                }
-
+                })
+                
                 // MARK: - Decision Tree
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("🌳 DECISION TREE")
                             .font(.headline)
-
+                        
                         Text("When to use ZStack vs overlay/background:")
                             .font(.subheadline)
-
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             DecisionTreeItem(
                                 question: "Should the secondary view affect the layout?",
                                 yes: "Use ZStack",
                                 no: "Use overlay/background"
                             )
-
+                            
                             DecisionTreeItem(
                                 question: "Is the secondary view decorative (badge, border, shadow)?",
                                 yes: "Use overlay/background",
                                 no: "Consider ZStack"
                             )
-
+                            
                             DecisionTreeItem(
                                 question: "Do you want siblings to see the secondary view's size?",
                                 yes: "Use ZStack",
                                 no: "Use overlay/background"
                             )
-
+                            
                             DecisionTreeItem(
                                 question: "Are all subviews equally important to the layout?",
                                 yes: "Use ZStack",
@@ -580,46 +580,46 @@ struct ZStackLayoutBehavior: View {
                         }
                         .font(.caption)
                     }
-                }
-
+                })
+                
                 // MARK: - Quick Reference
-
-                GroupBox {
+                
+                GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("📚 QUICK REFERENCE")
                             .font(.headline)
-
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             ZStackQuickRefItem(
                                 term: "ZStack size",
                                 definition: "UNION (bounding box) of all subviews' frames"
                             )
-
+                            
                             ZStackQuickRefItem(
                                 term: "Proposal",
                                 definition: "Same size proposed to ALL subviews"
                             )
-
+                            
                             ZStackQuickRefItem(
                                 term: "vs overlay",
                                 definition: "overlay = primary's size, ZStack = union of all"
                             )
-
+                            
                             ZStackQuickRefItem(
                                 term: "Alignment",
                                 definition: "Positions subviews within the union (default: .center)"
                             )
-
+                            
                             ZStackQuickRefItem(
                                 term: "Z-order",
                                 definition: "Later subviews appear on top (or use .zIndex())"
                             )
-
+                            
                             ZStackQuickRefItem(
                                 term: "Use for",
                                 definition: "Layered content where all views matter to layout"
                             )
-
+                            
                             ZStackQuickRefItem(
                                 term: "Don't use for",
                                 definition: "Badges, decorations (use overlay instead!)"
@@ -628,10 +628,11 @@ struct ZStackLayoutBehavior: View {
                         .font(.caption)
                     }
                 }
+                )
+                .padding()
             }
-            .padding()
+            .navigationTitle("ZStack Layout")
         }
-        .navigationTitle("ZStack Layout")
     }
 }
 
