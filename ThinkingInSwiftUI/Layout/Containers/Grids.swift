@@ -103,6 +103,116 @@ struct WhyGridsExample: View {
                             .font(.caption)
                             .foregroundColor(.orange)
                             .padding(.top, 8)
+
+                        Divider()
+                            .padding(.vertical, 8)
+
+                        Text("🤔 Why Is Grid Syntax So Different?")
+                            .font(.headline)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Grid vs LazyVGrid have completely different syntax because they solve different problems:")
+                                .font(.caption)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack(alignment: .top, spacing: 8) {
+                                    Text("•")
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Grid = 2D Table/Form Layout")
+                                            .font(.caption)
+                                            .bold()
+                                        Text("Explicit structure: You define ROWS with GridRow")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text("Like HTML <table> with <tr> rows")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text("Full control: cell spanning, per-column alignment, 2D coordination")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+
+                                HStack(alignment: .top, spacing: 8) {
+                                    Text("•")
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("LazyVGrid = 1D Flowing Grid")
+                                            .font(.caption)
+                                            .bold()
+                                        Text("Auto-flow: Define column structure, items flow into it")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text("Like CSS Grid with grid-template-columns + auto-flow")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text("You specify: columns = [GridItem(...), GridItem(...)]")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text("Then: Items automatically fill columns top-to-bottom")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
+
+                            Text("Syntax comparison:")
+                                .font(.caption)
+                                .bold()
+                                .padding(.top, 8)
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Grid (Explicit Rows):")
+                                    .font(.caption2)
+                                    .foregroundColor(.blue)
+
+                                Text("""
+                                Grid {
+                                    GridRow { Text("A"); Text("B") }
+                                    GridRow { Text("C"); Text("D") }
+                                }
+                                // You control: which row each item goes in
+                                """)
+                                .font(.system(.caption2, design: .monospaced))
+                                .padding(8)
+                                .background(Color.blue.opacity(0.1))
+                                .cornerRadius(5)
+
+                                Text("LazyVGrid (Auto-Flow):")
+                                    .font(.caption2)
+                                    .foregroundColor(.green)
+
+                                Text("""
+                                let cols = [GridItem(.flexible()), GridItem(.flexible())]
+                                LazyVGrid(columns: cols) {
+                                    Text("A"); Text("B")
+                                    Text("C"); Text("D")
+                                }
+                                // Items auto-flow: A→col1, B→col2, C→col1, D→col2
+                                """)
+                                .font(.system(.caption2, design: .monospaced))
+                                .padding(8)
+                                .background(Color.green.opacity(0.1))
+                                .cornerRadius(5)
+                            }
+
+                            Text("Why the difference?")
+                                .font(.caption)
+                                .bold()
+                                .padding(.top, 8)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("• Grid needs GridRow because you might want cell spanning, different column counts per row, precise 2D control")
+                                    .font(.caption2)
+                                Text("• LazyVGrid uses GridItem[] because columns are FIXED - you're defining a repeating pattern for thousands of items")
+                                    .font(.caption2)
+                                Text("• Grid = \"I know my table structure\" (forms, settings, small layouts)")
+                                    .font(.caption2)
+                                    .foregroundColor(.blue)
+                                Text("• LazyVGrid = \"I have 1000 items, flow them into 3 columns\" (photos, products)")
+                                    .font(.caption2)
+                                    .foregroundColor(.green)
+                            }
+                        }
                     }
                 })
 
@@ -251,6 +361,91 @@ struct GridExamples: View {
                             Text("• NO GridColumn exists - columns emerge from structure")
                                 .font(.caption)
                         }
+
+                        Text("📏 Default Column Sizing")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundColor(.blue)
+                            .padding(.top, 8)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("• Grid creates EQUAL-WIDTH FLEXIBLE columns by default")
+                                .font(.caption)
+                                .bold()
+                            Text("• Without explicit sizing, available width is divided equally")
+                                .font(.caption)
+                            Text("• This is different from LazyVGrid where you use GridItem")
+                                .font(.caption)
+                            Text("• LazyVGrid: GridItem(.fixed()), .flexible(), .adaptive()")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text("• Grid: No GridItem - defaults to flexible equal widths")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Text("Example: 2 columns in Grid → each gets 50% of width")
+                            .font(.caption)
+                            .foregroundColor(.green)
+                            .padding(.top, 4)
+
+                        Divider()
+                            .padding(.vertical, 8)
+
+                        Text("🎨 Customizing Column Widths")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundColor(.purple)
+
+                        Text("Unlike LazyVGrid (where you define GridItem upfront), Grid uses CELL MODIFIERS:")
+                            .font(.caption)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("• .frame(maxWidth: .infinity) → Flexible column (expands)")
+                                .font(.caption2)
+                            Text("• .frame(width: N) → Fixed width column")
+                                .font(.caption2)
+                            Text("• .fixedSize() → Content-sized column")
+                                .font(.caption2)
+                            Text("  (Grid finds MAX ideal width across all cells in column)")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text("• .gridCellUnsizedAxes(.horizontal) → Alternative to fixedSize")
+                                .font(.caption2)
+                        }
+
+                        Text("Example: Column 1 flexible, Column 2 content-sized")
+                            .font(.caption)
+                            .padding(.top, 8)
+
+                        Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+                            GridRow {
+                                Text("Very Long Text in Flexible Column")
+                                    .frame(maxWidth: .infinity)  // Flexible
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+                                Text("B")
+                                    .fixedSize()  // Content-sized
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                            }
+
+                            GridRow {
+                                Text("Also flexible")
+                                    .frame(maxWidth: .infinity)  // Flexible
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+                                Text("B")
+                                    .fixedSize()  // Content-sized
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                            }
+                        }
+                        .border(Color.gray)
+
+                        Text("↑ Column 1 expands, Column 2 width = max('B', 'B') = natural 'B' width")
+                            .font(.caption2)
+                            .foregroundColor(.purple)
 
                         Text("Example structure:")
                             .font(.subheadline)
@@ -549,25 +744,162 @@ struct GridExamples: View {
 
                         MeasuredTextGrid()
 
-                        Text("The two-pass algorithm is ESSENTIAL for wrapping text:")
-                            .font(.caption)
-                            .padding(.top, 8)
+                        Divider()
+                            .padding(.vertical, 8)
 
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Pass 1: Grid proposes wide size → Text reports ideal (single line)")
-                                .font(.caption2)
-                            Text("Pass 1: Grid calculates column widths from ideal sizes")
-                                .font(.caption2)
-                            Text("Pass 2: Grid re-proposes calculated column widths → Text WRAPS if needed")
-                                .font(.caption2)
-                            Text("Pass 2: Row heights adjust based on wrapped text height")
-                                .font(.caption2)
+                        Text("Detailed Algorithm for Text Example")
+                            .font(.subheadline)
+                            .bold()
+
+                        Text("⚠️ Note: The numbers below are examples to illustrate the algorithm. The actual measured sizes above will differ based on your device's screen width.")
+                            .font(.caption2)
+                            .foregroundColor(.orange)
+                            .padding(8)
+                            .background(Color.orange.opacity(0.1))
+                            .cornerRadius(5)
+
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("PASS 1: LAYOUT PASS (Example with 350pt screen width)")
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(.blue)
+
+                            LayoutStep(
+                                step: "1",
+                                title: "Grid receives proposal",
+                                description: "Parent proposes full width (e.g., 350×∞)"
+                            )
+
+                            LayoutStep(
+                                step: "2",
+                                title: "Grid proposes same to all cells",
+                                description: """
+                                Row 1, Col 1: Proposes 350×∞
+                                Row 1, Col 2: Proposes 350×∞
+                                Row 2, Col 1: Proposes 350×∞
+                                Row 2, Col 2: Proposes 350×∞
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "3",
+                                title: "Grid divides width among columns",
+                                description: """
+                                Grid has 350pt to work with
+                                Grid uses FLEXIBLE EQUAL-WIDTH columns by default
+                                With 2 columns + spacing: (350 - 10) / 2 = 170pt per column
+                                Grid proposes 170pt width to each cell
+                                (This is Grid's default behavior without explicit GridItem sizing)
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "4",
+                                title: "Cells report sizes with proposed width",
+                                description: """
+                                Row 1, Col 1: "Very Long..." with 170pt width
+                                  → Text WRAPS to 4 lines! Reports 170×80
+                                Row 1, Col 2: "B" with 170pt → Reports 170×20
+                                Row 2, Col 1: "A" with 170pt → Reports 170×20
+                                Row 2, Col 2: "B" with 170pt → Reports 170×20
+                                (Due to .frame(maxWidth: .infinity), text accepts width and wraps!)
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "5",
+                                title: "Grid calculates final column widths",
+                                description: """
+                                Column 1: max(170, 170) = 170 (all cells accepted 170pt)
+                                Column 2: max(170, 170) = 170
+                                Total width: 170 + 10 + 170 = 350
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "6",
+                                title: "Grid calculates row heights",
+                                description: """
+                                Row 1: max(80, 20) = 80 (text wrapped to 4 lines!)
+                                Row 2: max(20, 20) = 20
+                                Total height: 80 + 10 + 20 = 110
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "7",
+                                title: "Grid reports its size",
+                                description: "Grid reports: 350×110 to parent"
+                            )
+
+                            Text("PASS 2: RENDER PASS")
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(.green)
+                                .padding(.top, 8)
+
+                            LayoutStep(
+                                step: "8",
+                                title: "Grid starts with calculated size",
+                                description: "Grid now has 350×110 from Pass 1"
+                            )
+
+                            LayoutStep(
+                                step: "9",
+                                title: "Grid re-proposes with final column/row sizes",
+                                description: """
+                                Row 1, Col 1: Proposes 170×80 (column 1 width × row 1 height)
+                                Row 1, Col 2: Proposes 170×80 (column 2 width × row 1 height)
+                                Row 2, Col 1: Proposes 170×20 (column 1 width × row 2 height)
+                                Row 2, Col 2: Proposes 170×20 (column 2 width × row 2 height)
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "10",
+                                title: "Grid positions cells",
+                                description: """
+                                Row 1, Col 1: Position (0, 0), wrapped text fills 170×80
+                                Row 1, Col 2: Position (180, 0), "B" in 170×80 space
+                                Row 2, Col 1: Position (0, 90), "A" in 170×20 space
+                                Row 2, Col 2: Position (180, 90), "B" in 170×20 space
+                                """
+                            )
+
+                            LayoutStep(
+                                step: "✓",
+                                title: "Final layout complete!",
+                                description: """
+                                All Column 1 cells have width=170pt (coordinated!)
+                                Row 1 is taller (80pt) because long text wrapped
+                                Row 2 is shorter (20pt) but still gets same column widths
+                                """
+                            )
                         }
 
-                        Text("🎯 Without two passes, Grid couldn't coordinate wrapping text across rows!")
+                        Text("🎯 The two-pass algorithm ensures:")
                             .font(.caption)
-                            .foregroundColor(.orange)
+                            .bold()
                             .padding(.top, 8)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("• Grid defaults to EQUAL-WIDTH FLEXIBLE columns")
+                                .font(.caption2)
+                                .foregroundColor(.blue)
+                                .bold()
+                            Text("• Pass 1: Determine ideal column widths across all rows")
+                                .font(.caption2)
+                            Text("• Pass 2: Re-layout with those widths, allowing text to wrap if needed")
+                                .font(.caption2)
+                            Text("• Row heights can adjust in Pass 2 based on actual wrapped content")
+                                .font(.caption2)
+                            Text("• All cells in same column get SAME width (coordination!)")
+                                .font(.caption2)
+                                .foregroundColor(.orange)
+                            Text("• Unlike LazyVGrid (uses GridItem), Grid has no explicit sizing")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 })
 
@@ -604,16 +936,161 @@ struct GridExamples: View {
                     }
                 })
 
-                // MARK: - Cell Spanning
+                // MARK: - Custom Column Widths
 
                 GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
-                        Text("Cell Spanning")
+                        Text("Custom Column Widths")
                             .font(.headline)
+
+                        Text("Mix flexible, fixed, and adaptive columns:")
+                            .font(.subheadline)
 
                         Grid(horizontalSpacing: 10, verticalSpacing: 10) {
                             GridRow {
-                                Text("Header")
+                                Text("Label:")
+                                    .fixedSize()  // Column 1: Adaptive (natural size)
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
+
+                                Text("This is flexible content that expands")
+                                    .frame(maxWidth: .infinity)  // Column 2: Flexible
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+
+                                Image(systemName: "star.fill")
+                                    .fixedSize()  // Column 3: Adaptive (icon size)
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                            }
+
+                            GridRow {
+                                Text("Name:")
+                                    .fixedSize()  // Column 1: Adaptive
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
+
+                                Text("Short text")
+                                    .frame(maxWidth: .infinity)  // Column 2: Flexible
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+
+                                Image(systemName: "checkmark")
+                                    .fixedSize()  // Column 3: Adaptive
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                            }
+
+                            GridRow {
+                                Text("Description:")
+                                    .fixedSize()  // Column 1: Adaptive
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
+
+                                Text("Another flexible column that takes remaining space")
+                                    .frame(maxWidth: .infinity)  // Column 2: Flexible
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+
+                                Image(systemName: "heart.fill")
+                                    .fixedSize()  // Column 3: Adaptive
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                            }
+                        }
+                        .border(Color.gray)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Column behaviors:")
+                                .font(.caption)
+                                .bold()
+                            Text("• Column 1 (orange): ALL cells have .fixedSize()")
+                                .font(.caption2)
+                            Text("  → Each cell reports ideal width: 'Label:' ~50pt, 'Description:' ~85pt")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text("  → Grid takes MAX → Column width = 85pt for ALL cells")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text("• Column 2 (blue): ALL cells have .frame(maxWidth: .infinity)")
+                                .font(.caption2)
+                            Text("  → Flexible - takes remaining space after columns 1 & 3")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text("• Column 3 (green): ALL cells have .fixedSize()")
+                                .font(.caption2)
+                            Text("  → Grid takes MAX of all icon widths")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Text("💡 Key insight: Grid coordinates column widths - each column gets ONE width (the max of all cells in that column)")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                            .padding(.top, 4)
+                    }
+                })
+
+                // MARK: - Grid Modifiers
+
+                GroupBox(label: EmptyView(), content: {
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("🛠️ Grid Cell Modifiers")
+                            .font(.headline)
+
+                        Text("SwiftUI provides 4 Grid-specific modifiers for customizing cell behavior:")
+                            .font(.subheadline)
+
+                        VStack(alignment: .leading, spacing: 12) {
+                            ModifierDescription(
+                                number: "1",
+                                name: ".gridCellColumns(_:)",
+                                description: "Spans a cell across multiple columns",
+                                color: .blue
+                            )
+
+                            ModifierDescription(
+                                number: "2",
+                                name: ".gridColumnAlignment(_:)",
+                                description: "Sets alignment for entire column",
+                                color: .green
+                            )
+
+                            ModifierDescription(
+                                number: "3",
+                                name: ".gridCellUnsizedAxes(_:)",
+                                description: "Uses ideal size instead of proposed size on specified axes",
+                                color: .orange
+                            )
+
+                            ModifierDescription(
+                                number: "4",
+                                name: ".gridCellAnchor(_:)",
+                                description: "Positions content within cell (like .frame(alignment:))",
+                                color: .purple
+                            )
+                        }
+
+                        Text("Let's see each one in action:")
+                            .font(.caption)
+                            .padding(.top, 8)
+                    }
+                })
+
+                // MARK: - 1. gridCellColumns
+
+                GroupBox(label: EmptyView(), content: {
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("1️⃣ .gridCellColumns(_:)")
+                            .font(.headline)
+                            .foregroundColor(.blue)
+
+                        Text("Make a cell span multiple columns (like HTML colspan):")
+                            .font(.subheadline)
+
+                        Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+                            GridRow {
+                                Text("Header Spanning 3 Columns")
                                     .gridCellColumns(3)
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 50)
@@ -632,55 +1109,245 @@ struct GridExamples: View {
                                     .background(Color.purple.opacity(0.3))
                             }
                             .frame(height: 60)
+
+                            GridRow {
+                                Text("D spans 2")
+                                    .gridCellColumns(2)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .background(Color.red.opacity(0.3))
+                                Text("E")
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .background(Color.purple.opacity(0.3))
+                            }
+                            .frame(height: 60)
                         }
 
-                        Text("Grid unique feature: cells can span multiple columns/rows")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                        Text("Code example:")
+                            .font(.caption)
+                            .padding(.top, 4)
+
+                        Text("""
+                        Text("Header")
+                            .gridCellColumns(3)  // Spans 3 columns
+                        """)
+                        .font(.system(.caption2, design: .monospaced))
+                        .padding(8)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(5)
                     }
                 })
 
-                // MARK: - Alignment
+                // MARK: - 2. gridColumnAlignment
 
                 GroupBox(label: EmptyView(), content: {
                     VStack(alignment: .leading, spacing: 15) {
-                        Text("Column Alignment")
+                        Text("2️⃣ .gridColumnAlignment(_:)")
                             .font(.headline)
+                            .foregroundColor(.green)
+
+                        Text("Set alignment for an ENTIRE column (affects all cells in that column):")
+                            .font(.subheadline)
 
                         Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 10) {
                             GridRow {
-                                Text("Left")
+                                Text("Leading")
                                     .gridColumnAlignment(.leading)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                                 Text("Center")
                                     .gridColumnAlignment(.center)
-                                Text("Right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text("Trailing")
                                     .gridColumnAlignment(.trailing)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
-                            .font(.caption)
-                            .foregroundColor(.secondary)
 
                             GridRow {
                                 Text("A")
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
                                 Text("B")
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
                                 Text("C")
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
                             }
                             .frame(height: 50)
 
                             GridRow {
                                 Text("Very Long A")
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
                                 Text("Short B")
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
                                 Text("Medium C")
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
                             }
                             .frame(height: 50)
                         }
                         .padding()
                         .background(Color.gray.opacity(0.1))
 
-                        Text("Each column can have its own alignment")
+                        Text("⚠️ Important: Set on FIRST row to affect entire column")
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.orange)
+
+                        Text("Code example:")
+                            .font(.caption)
+                            .padding(.top, 4)
+
+                        Text("""
+                        GridRow {  // First row
+                            Text("Col 1")
+                                .gridColumnAlignment(.leading)
+                            Text("Col 2")
+                                .gridColumnAlignment(.center)
+                        }
+                        """)
+                        .font(.system(.caption2, design: .monospaced))
+                        .padding(8)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(5)
                     }
                 })
+
+                // MARK: - 3. gridCellUnsizedAxes
+
+                GroupBox(label: EmptyView(), content: {
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("3️⃣ .gridCellUnsizedAxes(_:)")
+                            .font(.headline)
+                            .foregroundColor(.orange)
+
+                        Text("Tell Grid to use ideal size instead of proposed size on specific axes:")
+                            .font(.subheadline)
+
+                        Text("Options: .horizontal, .vertical, [.horizontal, .vertical]")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+                            GridRow {
+                                Text("Default behavior")
+                                    .frame(maxWidth: .infinity)
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+                                Text("Default")
+                                    .frame(maxWidth: .infinity)
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                            }
+
+                            GridRow {
+                                Text("Unsized horizontal")
+                                    .gridCellUnsizedAxes(.horizontal)
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
+                                Text("Short")
+                                    .gridCellUnsizedAxes(.horizontal)
+                                    .padding(8)
+                                    .background(Color.purple.opacity(0.2))
+                            }
+                        }
+                        .border(Color.gray)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Row 1: Both cells accept proposed width (equal widths)")
+                                .font(.caption2)
+                            Text("Row 2: .gridCellUnsizedAxes(.horizontal) = use ideal width")
+                                .font(.caption2)
+                            Text("  → Column 1 width determined by 'Unsized horizontal'")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Text("  → Column 2 width determined by 'Short'")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Text("💡 .gridCellUnsizedAxes(.horizontal) is similar to .fixedSize()")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                            .padding(.top, 4)
+
+                        Text("Code example:")
+                            .font(.caption)
+                            .padding(.top, 4)
+
+                        Text("""
+                        Text("Label:")
+                            .gridCellUnsizedAxes(.horizontal)
+                        // Column width = natural size of "Label:"
+                        """)
+                        .font(.system(.caption2, design: .monospaced))
+                        .padding(8)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(5)
+                    }
+                })
+
+                // MARK: - 4. gridCellAnchor
+
+                GroupBox(label: EmptyView(), content: {
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("4️⃣ .gridCellAnchor(_:)")
+                            .font(.headline)
+                            .foregroundColor(.purple)
+
+                        Text("Position content within its cell (like .frame(alignment:)):")
+                            .font(.subheadline)
+
+                        Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+                            GridRow {
+                                Text("Top Leading")
+                                    .gridCellAnchor(.topLeading)
+                                    .padding(8)
+                                    .background(Color.blue.opacity(0.2))
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                    .background(Color.gray.opacity(0.1))
+
+                                Text("Center")
+                                    .gridCellAnchor(.center)
+                                    .padding(8)
+                                    .background(Color.green.opacity(0.2))
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                    .background(Color.gray.opacity(0.1))
+
+                                Text("Bottom Trailing")
+                                    .gridCellAnchor(.bottomTrailing)
+                                    .padding(8)
+                                    .background(Color.orange.opacity(0.2))
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                                    .background(Color.gray.opacity(0.1))
+                            }
+                            .frame(height: 80)
+                        }
+                        .border(Color.gray)
+
+                        Text("Available anchors: .topLeading, .top, .topTrailing, .leading, .center, .trailing, .bottomLeading, .bottom, .bottomTrailing")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+
+                        Text("Code example:")
+                            .font(.caption)
+                            .padding(.top, 4)
+
+                        Text("""
+                        Text("Content")
+                            .gridCellAnchor(.center)
+                        // Positions content at center of cell
+                        """)
+                        .font(.system(.caption2, design: .monospaced))
+                        .padding(8)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(5)
+                    }
+                })
+
             }
             .padding()
         }
@@ -799,6 +1466,158 @@ struct LazyVGridExamples: View {
                         Text("Adaptive creates as many columns as fit (try rotating device)")
                             .font(.caption2)
                             .foregroundColor(.secondary)
+                    }
+                })
+
+                // MARK: - Anomalous Items Issue
+
+                GroupBox(label: EmptyView(), content: {
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("⚠️ Problem: Anomalous Items")
+                            .font(.headline)
+
+                        Text("What happens when ONE item has different size?")
+                            .font(.subheadline)
+
+                        Text("Flexible columns with anomalous item:")
+                            .font(.caption)
+                            .padding(.top, 8)
+
+                        let flexibleColumns = [
+                            GridItem(.flexible()),
+                            GridItem(.flexible()),
+                            GridItem(.flexible())
+                        ]
+
+                        LazyVGrid(columns: flexibleColumns, spacing: 10) {
+                            ForEach(0..<9) { i in
+                                if i == 4 {
+                                    // Anomalous item in column 2
+                                    Text("Very Long Anomalous Item That Breaks The Grid Layout")
+                                        .frame(maxWidth: .infinity)
+                                        .padding(8)
+                                        .background(Color.red.opacity(0.3))
+                                } else {
+                                    Text("\(i)")
+                                        .frame(maxWidth: .infinity)
+                                        .padding(8)
+                                        .background(Color.blue.opacity(0.3))
+                                }
+                            }
+                        }
+
+                        Text("↑ Notice: Item 4 forces column 2 to be MUCH wider, affecting items 1, 4, 7")
+                            .font(.caption2)
+                            .foregroundColor(.red)
+
+                        Divider()
+
+                        Text("Adaptive columns with varying sizes:")
+                            .font(.caption)
+                            .padding(.top, 8)
+
+                        let adaptiveColumns = [
+                            GridItem(.adaptive(minimum: 60))
+                        ]
+
+                        LazyVGrid(columns: adaptiveColumns, spacing: 10) {
+                            ForEach(0..<12) { i in
+                                if i == 3 {
+                                    Text("Anomalous Wide")
+                                        .padding(8)
+                                        .background(Color.red.opacity(0.3))
+                                } else {
+                                    Text("\(i)")
+                                        .padding(8)
+                                        .background(Color.green.opacity(0.3))
+                                }
+                            }
+                        }
+
+                        Text("↑ Adaptive struggles with inconsistent item sizes")
+                            .font(.caption2)
+                            .foregroundColor(.red)
+
+                        Divider()
+
+                        Text("✅ Solutions:")
+                            .font(.caption)
+                            .bold()
+                            .padding(.top, 8)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("1. Use .fixed() to enforce strict column widths")
+                                .font(.caption2)
+                            Text("2. Clamp sizes with .frame(maxWidth:, maxHeight:)")
+                                .font(.caption2)
+                            Text("3. Use .aspectRatio() for consistent shapes")
+                                .font(.caption2)
+                            Text("4. Truncate text with .lineLimit()")
+                                .font(.caption2)
+                        }
+
+                        Text("Fixed columns solution:")
+                            .font(.caption)
+                            .padding(.top, 8)
+
+                        let fixedColumnsSolution = [
+                            GridItem(.fixed(80)),
+                            GridItem(.fixed(80)),
+                            GridItem(.fixed(80))
+                        ]
+
+                        LazyVGrid(columns: fixedColumnsSolution, spacing: 10) {
+                            ForEach(0..<9) { i in
+                                if i == 4 {
+                                    Text("Very Long Anomalous Item")
+                                        .lineLimit(2)
+                                        .frame(width: 80, height: 60)
+                                        .padding(4)
+                                        .background(Color.green.opacity(0.3))
+                                } else {
+                                    Text("\(i)")
+                                        .frame(width: 80, height: 60)
+                                        .padding(4)
+                                        .background(Color.blue.opacity(0.3))
+                                }
+                            }
+                        }
+
+                        Text("↑ Fixed widths + lineLimit() = consistent grid")
+                            .font(.caption2)
+                            .foregroundColor(.green)
+
+                        Text("Clamped flexible solution:")
+                            .font(.caption)
+                            .padding(.top, 8)
+
+                        LazyVGrid(columns: flexibleColumns, spacing: 10) {
+                            ForEach(0..<9) { i in
+                                if i == 4 {
+                                    Text("Very Long Item")
+                                        .lineLimit(1)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 50)
+                                        .padding(4)
+                                        .background(Color.green.opacity(0.3))
+                                } else {
+                                    Text("\(i)")
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 50)
+                                        .padding(4)
+                                        .background(Color.blue.opacity(0.3))
+                                }
+                            }
+                        }
+
+                        Text("↑ Flexible + .lineLimit(1) + fixed height = better balance")
+                            .font(.caption2)
+                            .foregroundColor(.green)
+
+                        Text("💡 Key insight: Real-world data isn't uniform - always constrain item sizes!")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                            .padding(.top, 4)
                     }
                 })
             }
@@ -1238,11 +2057,40 @@ struct MeasuredTextGrid: View {
                     .foregroundColor(.green)
 
                 if cell1Size.width > 0 && cell3Size.width > 0 {
+                    Divider()
+                        .padding(.vertical, 4)
+
                     Text("↑ Notice: Both Column 1 cells have SAME width (\(Int(cell1Size.width))pt)")
                         .font(.caption2)
                         .foregroundColor(.orange)
                         .bold()
+
+                    Text("What happened with YOUR device width:")
+                        .font(.caption2)
+                        .bold()
                         .padding(.top, 4)
+
+                    let totalWidth = Int(gridSize.width)
+                    let colWidth = Int(cell1Size.width)
+                    let spacing = 10
+                    let col1Height = Int(cell1Size.height)
+                    let col2Height = Int(cell2Size.height)
+                    let rowHeight = max(col1Height, col2Height)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("1. Grid got \(totalWidth)pt width from parent")
+                            .font(.caption2)
+                        Text("2. Divided equally: (\(totalWidth) - \(spacing)) / 2 = \(colWidth)pt per column")
+                            .font(.caption2)
+                        Text("3. Long text wrapped in \(colWidth)pt → \(col1Height)pt tall")
+                            .font(.caption2)
+                        Text("4. Row 1 height = max(\(col1Height), \(col2Height)) = \(rowHeight)pt")
+                            .font(.caption2)
+                        Text("5. Final Grid: \(totalWidth)×\(Int(gridSize.height))")
+                            .font(.caption2)
+                            .bold()
+                    }
+                    .foregroundColor(.secondary)
                 }
             }
             .padding(8)
@@ -1305,6 +2153,34 @@ struct LayoutStep: View {
                 Text(title)
                     .font(.caption)
                     .bold()
+                Text(description)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+}
+
+struct ModifierDescription: View {
+    let number: String
+    let name: String
+    let description: String
+    let color: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Text(number)
+                .font(.caption)
+                .bold()
+                .foregroundColor(.white)
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(color))
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(name)
+                    .font(.caption)
+                    .bold()
+                    .foregroundColor(color)
                 Text(description)
                     .font(.caption2)
                     .foregroundColor(.secondary)
