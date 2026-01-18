@@ -188,8 +188,6 @@ struct PreferenceKeyBasicsExample: View {
 // MARK: - Tab 2: Equal Width Buttons Example
 
 struct EqualWidthButtonsExample: View {
-    @State private var maxWidth: CGFloat?
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 30) {
@@ -750,11 +748,13 @@ struct EqualWidthButton: View {
     }
 
     var body: some View {
-        Button(title, action: action)
-            .buttonStyle(.bordered)
-            .frame(width: width)
-            .background(
-                GeometryReader { geo in
+        Button(action: action) {
+            Text(title)
+                .frame(width: width)  // Label expands, button follows
+        }
+        .buttonStyle(.bordered)
+        .background(
+            GeometryReader { geo in
                     Color.clear.preference(
                         key: ButtonWidthKey.self,
                         value: geo.size.width
