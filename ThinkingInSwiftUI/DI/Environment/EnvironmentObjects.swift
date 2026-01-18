@@ -346,7 +346,7 @@ struct AppSettingsExample: View {
                             rightPoints: ["Complex objects with methods", "In-memory (persist manually)", "Computed properties & logic"]
                         )
 
-                        Text("Use environment objects when you need shared state with business logic, computed properties, or methods.")
+                        Text("Use environ ment objects when you need shared state with business logic, computed properties, or methods.")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }

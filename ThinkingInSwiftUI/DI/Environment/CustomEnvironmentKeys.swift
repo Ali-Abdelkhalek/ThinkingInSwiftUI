@@ -547,14 +547,20 @@ struct EnvironmentInStylesExample: View {
                     VStack(alignment: .leading, spacing: 15) {
                         Text("Example: Adaptive Badge Style")
                             .font(.headline)
-                        
+
                         Toggle("Disable badges", isOn: $isDisabled)
                             .padding(.bottom, 8)
-                        
+
                         HStack(spacing: 30) {
                             Text("Inbox")
+                                .padding(8)
+                                .background(Color.white.opacity(0.5))
+                                .cornerRadius(8)
                                 .badge { Text(5, format: .number) }
                             Text("Spam")
+                                .padding(8)
+                                .background(Color.white.opacity(0.5))
+                                .cornerRadius(8)
                                 .badge { Text(42, format: .number) }
                         }
                         .font(.title2)
@@ -562,17 +568,20 @@ struct EnvironmentInStylesExample: View {
                         .disabled(isDisabled)
                         .padding()
                         .background(Color.green.opacity(0.1))
-                        
+
                         Text("AdaptiveBadgeStyle reads @Environment(\\\\.isEnabled)")
                             .font(.caption2)
                             .foregroundColor(.secondary)
-                        
+
                         Text("""
                         struct AdaptiveBadgeStyle: BadgeStyle {
                             @Environment(\\\\.isEnabled) var isEnabled  // ✅ Works now!
-                        
+
                             func makeBody(_ label: AnyView) -> some View {
                                 label
+                                    .background {
+                                        Capsule().fill(isEnabled ? .blue : .gray)
+                                    }
                                     .opacity(isEnabled ? 1 : 0.5)
                                     .saturation(isEnabled ? 1 : 0)
                             }
@@ -658,27 +667,39 @@ struct CompleteCustomStyleExample: View {
                             Text("Messages")
                                 .font(.title2)
                                 .bold()
-                            
+
                             HStack(spacing: 30) {
                                 VStack {
                                     Text("📥")
                                         .font(.largeTitle)
-                                    Text("Inbox")
+                                        .padding(8)
+                                        .background(Color.white.opacity(0.5))
+                                        .cornerRadius(8)
                                         .badge { Text(5, format: .number) }
+                                    Text("Inbox")
+                                        .font(.caption)
                                 }
-                                
+
                                 VStack {
                                     Text("⚠️")
                                         .font(.largeTitle)
-                                    Text("Spam")
+                                        .padding(8)
+                                        .background(Color.white.opacity(0.5))
+                                        .cornerRadius(8)
                                         .badge { Text(999, format: .number) }
+                                    Text("Spam")
+                                        .font(.caption)
                                 }
-                                
+
                                 VStack {
                                     Text("🗑️")
                                         .font(.largeTitle)
-                                    Text("Trash")
+                                        .padding(8)
+                                        .background(Color.white.opacity(0.5))
+                                        .cornerRadius(8)
                                         .badge { Text(42, format: .number) }
+                                    Text("Trash")
+                                        .font(.caption)
                                 }
                             }
                         }
@@ -869,7 +890,7 @@ struct FancyBadgeStyle: BadgeStyle {
 // Adaptive badge style that reads environment
 struct AdaptiveBadgeStyle: BadgeStyle {
     @Environment(\.isEnabled) var isEnabled
-    
+
     func makeBody(_ label: AnyView) -> some View {
         label
             .font(.caption)
@@ -878,7 +899,7 @@ struct AdaptiveBadgeStyle: BadgeStyle {
             .padding(.vertical, 2)
             .background {
                 Capsule(style: .continuous)
-                    .fill(.blue)
+                    .fill(isEnabled ? .blue : .gray)
             }
             .opacity(isEnabled ? 1 : 0.5)
             .saturation(isEnabled ? 1 : 0)
