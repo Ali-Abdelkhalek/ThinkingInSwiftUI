@@ -963,32 +963,7 @@ fileprivate extension Color {
 }
 
 // MARK: - Helper Views
-
-fileprivate struct StepView: View {
-    let step: String
-    let title: String
-    let description: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Text(step)
-                .font(.caption)
-                .bold()
-                .foregroundColor(.white)
-                .frame(width: 24, height: 24)
-                .background(Circle().fill(Color.blue))
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.caption)
-                    .bold()
-                Text(description)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-        }
-    }
-}
+// StepView now imported from DesignSystem/Components/StepView.swift
 
 // MARK: - Preview
 
