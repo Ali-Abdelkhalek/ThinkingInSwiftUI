@@ -29,23 +29,9 @@
 		6693383E2D46B9430096611C /* ThinkingInSwiftUIUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThinkingInSwiftUIUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		66EFEDF62DA37F7C00E3FEAE /* Exceptions for "ThinkingInSwiftUI" folder in "Copy Bundle Resources" phase from "ThinkingInSwiftUI" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 669338222D46B9410096611C /* Resources */;
-			membershipExceptions = (
-				CustomLayout/Text.swift,
-				Layout/Containers/ScrollView.swift,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		669338262D46B9410096611C /* ThinkingInSwiftUI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				66EFEDF62DA37F7C00E3FEAE /* Exceptions for "ThinkingInSwiftUI" folder in "Copy Bundle Resources" phase from "ThinkingInSwiftUI" target */,
-			);
 			path = ThinkingInSwiftUI;
 			sourceTree = "<group>";
 		};
