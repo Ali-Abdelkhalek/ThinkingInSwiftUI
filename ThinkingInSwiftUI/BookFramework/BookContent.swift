@@ -14,12 +14,12 @@ struct BookContent {
 
     /// Get total number of sections across all chapters
     var totalSections: Int {
-        chapters.reduce(0) { $0 + $1.sections.count }
+        chapters.reduce(0) { $0 + $1.allSections.count }
     }
 
     /// Get flat list of all sections in reading order
     var allSections: [BookSection] {
-        chapters.flatMap { $0.sections }
+        chapters.flatMap { $0.allSections }
     }
 
     /// Get section by global order
@@ -35,9 +35,33 @@ struct BookChapter: Identifiable {
     let number: Int
     let title: String
     let icon: String
-    let sections: [BookSection]
+    let topics: [BookTopic]
+
+    /// Get all sections from all topics
+    var allSections: [BookSection] {
+        topics.flatMap { $0.sections }
+    }
 
     /// Chapter progress (0.0 to 1.0)
+    func progress(completed: Set<UUID>) -> Double {
+        let sections = allSections
+        guard !sections.isEmpty else { return 0 }
+        let completedCount = sections.filter { completed.contains($0.id) }.count
+        return Double(completedCount) / Double(sections.count)
+    }
+}
+
+// MARK: - Topic
+
+struct BookTopic: Identifiable {
+    let id = UUID()
+    let order: Int              // Order within chapter: 1, 2, 3...
+    let chapterNumber: Int
+    let topicNumber: String     // "4.1", "4.2", etc.
+    let title: String
+    let sections: [BookSection]
+
+    /// Topic progress (0.0 to 1.0)
     func progress(completed: Set<UUID>) -> Double {
         guard !sections.isEmpty else { return 0 }
         let completedCount = sections.filter { completed.contains($0.id) }.count
@@ -49,23 +73,26 @@ struct BookChapter: Identifiable {
 
 struct BookSection: Identifiable {
     let id: UUID
-    let order: Int              // Global order: 1, 2, 3...
-    let chapterNumber: Int
+    let order: Int              // Global order for navigation: 1, 2, 3...
+    let topicNumber: String     // "4.1", "4.2", etc.
+    let sectionNumber: String   // "4.2.1", "4.2.2.1", etc.
     let title: String
     let view: AnyView
     let estimatedMinutes: Int?
 
     /// Helper to create section with type-safe view
-    init<Content: View>(
+    init(
         order: Int,
-        chapterNumber: Int,
+        topicNumber: String,
+        sectionNumber: String,
         title: String,
         estimatedMinutes: Int? = nil,
-        @ViewBuilder view: () -> Content
+        @ViewBuilder view: () -> some View
     ) {
         self.id = UUID()
         self.order = order
-        self.chapterNumber = chapterNumber
+        self.topicNumber = topicNumber
+        self.sectionNumber = sectionNumber
         self.title = title
         self.estimatedMinutes = estimatedMinutes
         self.view = AnyView(view())

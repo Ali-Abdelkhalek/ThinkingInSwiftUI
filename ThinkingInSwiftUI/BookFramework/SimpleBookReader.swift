@@ -22,10 +22,11 @@ struct SimpleBookReader: View {
             VStack(spacing: 0) {
                 // Breadcrumb Bar
                 BreadcrumbBar(
-                    chapterNumber: currentSection.chapterNumber,
-                    chapterTitle: currentChapterTitle,
-                    chapterIcon: currentChapterIcon,
-                    sectionNumber: sectionNumberInChapter,
+                    chapterNumber: currentChapter?.number ?? 0,
+                    chapterTitle: currentChapter?.title ?? "",
+                    chapterIcon: currentChapter?.icon ?? "book",
+                    topicTitle: currentTopic?.title ?? "",
+                    sectionNumber: currentSection.sectionNumber,
                     sectionTitle: currentSection.title
                 )
 
@@ -55,7 +56,7 @@ struct SimpleBookReader: View {
                         showMenu = true
                     } label: {
                         HStack(spacing: 4) {
-                            Text("\(currentSection.chapterNumber).\(sectionNumberInChapter)")
+                            Text(currentSection.sectionNumber)
                                 .font(.caption)
                                 .fontWeight(.semibold)
                             Image(systemName: "chevron.down")
@@ -105,22 +106,18 @@ struct SimpleBookReader: View {
         book.section(at: currentSection.order + 1)
     }
 
-    var sectionNumberInChapter: Int {
-        guard let chapter = book.chapters.first(where: { $0.number == currentSection.chapterNumber }) else {
-            return 1
+    var currentChapter: BookChapter? {
+        book.chapters.first { chapter in
+            chapter.topics.contains { topic in
+                topic.sections.contains { $0.id == currentSection.id }
+            }
         }
-        guard let index = chapter.sections.firstIndex(where: { $0.id == currentSection.id }) else {
-            return 1
-        }
-        return index + 1
     }
 
-    var currentChapterTitle: String {
-        book.chapters.first(where: { $0.number == currentSection.chapterNumber })?.title ?? ""
-    }
-
-    var currentChapterIcon: String {
-        book.chapters.first(where: { $0.number == currentSection.chapterNumber })?.icon ?? "book"
+    var currentTopic: BookTopic? {
+        currentChapter?.topics.first { topic in
+            topic.sections.contains { $0.id == currentSection.id }
+        }
     }
 }
 
@@ -130,7 +127,8 @@ fileprivate struct BreadcrumbBar: View {
     let chapterNumber: Int
     let chapterTitle: String
     let chapterIcon: String
-    let sectionNumber: Int
+    let topicTitle: String
+    let sectionNumber: String
     let sectionTitle: String
 
     var body: some View {
@@ -147,7 +145,7 @@ fileprivate struct BreadcrumbBar: View {
                 .font(.caption2)
                 .foregroundColor(.secondary)
 
-            Text(chapterTitle)
+            Text(topicTitle)
                 .font(.caption)
                 .foregroundColor(.secondary)
 
@@ -155,7 +153,7 @@ fileprivate struct BreadcrumbBar: View {
                 .font(.caption2)
                 .foregroundColor(.secondary)
 
-            Text("\(chapterNumber).\(sectionNumber)")
+            Text(sectionNumber)
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.blue)
@@ -186,37 +184,48 @@ fileprivate struct MenuView: View {
         List {
             ForEach(book.chapters) { chapter in
                 Section {
-                    ForEach(Array(chapter.sections.enumerated()), id: \.element.id) { index, section in
-                        Button {
-                            onSelectSection(section)
-                        } label: {
-                            HStack {
-                                Text("\(chapter.number).\(index + 1)")
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.white)
-                                    .frame(width: 40, height: 28)
-                                    .background(section.id == currentSection.id ? Color.blue : Color.gray)
-                                    .clipShape(Capsule())
+                    ForEach(chapter.topics) { topic in
+                        Section {
+                            ForEach(topic.sections) { section in
+                                Button {
+                                    onSelectSection(section)
+                                } label: {
+                                    HStack {
+                                        Text(section.sectionNumber)
+                                            .font(.caption)
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(.white)
+                                            .frame(width: 55, height: 28)
+                                            .background(section.id == currentSection.id ? Color.blue : Color.gray)
+                                            .clipShape(Capsule())
 
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(section.title)
-                                        .foregroundColor(.primary)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(section.title)
+                                                .foregroundColor(.primary)
 
-                                    if let minutes = section.estimatedMinutes {
-                                        Text("\(minutes) min")
-                                            .font(.caption2)
-                                            .foregroundColor(.secondary)
+                                            if let minutes = section.estimatedMinutes {
+                                                Text("\(minutes) min")
+                                                    .font(.caption2)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                        }
+
+                                        Spacer()
+
+                                        if section.id == currentSection.id {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .foregroundColor(.blue)
+                                        }
                                     }
                                 }
-
-                                Spacer()
-
-                                if section.id == currentSection.id {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundColor(.blue)
-                                }
                             }
+                        } header: {
+                            HStack {
+                                Text(topic.topicNumber)
+                                    .fontWeight(.semibold)
+                                Text(topic.title)
+                            }
+                            .font(.subheadline)
                         }
                     }
                 } header: {
@@ -224,6 +233,7 @@ fileprivate struct MenuView: View {
                         Image(systemName: chapter.icon)
                         Text("Chapter \(chapter.number): \(chapter.title)")
                     }
+                    .font(.headline)
                 }
             }
         }
